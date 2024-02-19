@@ -14,7 +14,12 @@ const game = () => {
 // Player object creates a player with a name
 // Player can make a choice of where to land on the gameboard
 const player = (name, symbol) => {
-    return {name, symbol}
+    let score = 0;
+    
+    const getScore = () => (score);
+    const addScore = () => (++score);
+
+    return {name, symbol, getScore, addScore}
 }
 
 const gameBoard = () => {
