@@ -9,25 +9,6 @@ const game = () => {
     player1.updateTurn();
 
     // Simulate a game
-    // If it is a players turn, get their move
-    const promptPlayerMove = () => {
-        let row, col;
-        if (player1.getTurn() === true) {
-            do {
-                row = prompt(`What row would you like to place ${player1.symbol} in?`);
-                col = prompt(`What column would you like to place ${player1.symbol} in?`);
-            } while (!gameBoard.playerMove(player1.symbol, row, col));
-
-            player1.updateTurn();
-        } else {
-            do {
-                row = prompt(`What row would you like to place ${player2.symbol} in?`);
-                col = prompt(`What column would you like to place ${player2.symbol} in?`);
-            } while (!gameBoard.playerMove(player2.symbol, row, col));
-
-            player2.updateTurn();
-        }
-    }
 
     return {promptPlayerMove}
 };
