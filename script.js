@@ -44,7 +44,12 @@ const gameBoard = () => {
     }
 
     // Dom element with click event listener that runs playerMove(), then checks for gameOver() after move
-
+    const checkForWinner = () => {
+        for (let col = 0; col < board.length; col++) {
+            // cols go from 0 to length of array
+            // array[][col]
+        }
+    } 
 
     const checkWinner = () => {
         let row1 = board[0];
@@ -56,18 +61,18 @@ const gameBoard = () => {
         let diagStart = [board[0][0], board[1][1], board[2][2]];
         let diagEnd = [board[0][2], board[1][1], board[2][0]];
 
-        const winningCombinations = [row1, row2, row3, col1, col2, col3, diagStart, diagEnd];
+        const lines = [row1, row2, row3, col1, col2, col3, diagStart, diagEnd];
 
-        for (array of winningCombinations) {
+        for (let line of lines) {
             let xWinner = true;
             let oWinner = true;
 
-            for (let x = 0; x < array.length; x++) {
-                if (array[x] !== 'X') {
+            for (let x = 0; x < line.length; x++) {
+                if (line[x] !== 'X') {
                     xWinner = false;
                 } 
 
-                if (array[x] !== 'O') {
+                if (line[x] !== 'O') {
                     oWinner = false;
                 }
             }
@@ -81,50 +86,6 @@ const gameBoard = () => {
             }
         }
     }
-
-        // Make these global variables, that get added to everytime a player makes a move, use checkWinner to check these globals for a winner
-
-        // let rowX, rowO;
-        // Check for any 3 in a rows
-        // for (let row = 0; row < board.length; row++) {
-        //     rowX = true;
-        //     rowO = true;
-        //     for (let col = 0; col < board[row].length; col++) {
-        //         // if (board[row][col] === board[row][col+1]){
-        //         //     if (board[row][col] === 'X'){
-        //         //         rowX+=1;
-        //         //     }
-
-        //         //     if (board[row][col] === 'O'){
-        //         //         rowO+=1;
-        //         //     }
-
-        //         // Track rows
-        //         if (board[row][col] !== 'X') {
-        //             rowX = false;
-        //         }
-
-        //         if (board[row][col] !== 'O') {
-        //             rowO = false;
-        //         }
-
-        //         // Track columns
-        //         if (col === 0) {
-        //             col1.push(board[row][col])
-        //         } else if (col === 1) {
-        //             col2.push(board[row][col])
-        //         } else {
-        //             col3.push(board[row][col])
-        //         }
-        //     }
-
-        //     if (rowX) {
-        //         return 'X'
-        //     }
-
-        //     if (rowO) {
-        //         return 'O'
-        //     }
 
     const reset = () => board.forEach((row, index) => (board[index] = ['', '', '']));   
 
