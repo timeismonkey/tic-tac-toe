@@ -31,11 +31,23 @@ const player = (name, symbol) => {
 const gameBoard = () => {
     let moveCount = 0;
 
-    let board = [
-        ['', 'O', 'O'],
-        ['', 'x', ''],
-        ['X', 'O', 'X']
-    ]
+    // let board = [
+    //     ['', 'O', 'O'],
+    //     ['', 'x', ''],
+    //     ['X', 'O', 'X']
+    // ]
+
+    let row1 = Array.from(document.querySelectorAll('.row1  li'));
+    let row2 = Array.from(document.querySelectorAll('.row2 li'));
+    let row3 = Array.from(document.querySelectorAll('.row3 li'));
+
+    row1 = row1.map((item) => item.innerHTML);
+    row2 = row2.map((item) => item.innerHTML);
+    row3 = row3.map((item) => item.innerHTML);
+
+    let board = [row1, row2, row3]
+
+
 
     const playerMove = (symb, row, col) => {
         if (board[row][col] === ''){
@@ -79,6 +91,7 @@ const gameBoard = () => {
 }
 
 
-// const board = gameBoard();
+const board = gameBoard();
 // console.log(board.checkWinnerAndTie());
 
+console.log(board.board);
