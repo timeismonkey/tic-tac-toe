@@ -29,22 +29,25 @@ const player = (name, symbol) => {
 }
 
 const gameBoard = () => {
+    let moveCount = 0;
+
     let board = [
-        ['O', 'X', 'X'],
-        ['X', '', 'O'],
-        ['X', 'O', 'O']
+        ['', 'O', 'O'],
+        ['', 'x', ''],
+        ['X', 'O', 'X']
     ]
 
     const playerMove = (symb, row, col) => {
         if (board[row][col] === ''){
             board[row][col] === symb;
+            moveCount += 1;
             return true
         } 
          return false 
     }
 
     // Dom element with click event listener that runs playerMove(), then checks for gameOver() after move
-    const checkWinner = () => {
+    const checkWinnerAndTie = () => {
         for (let line = 0; line < board.length; line++) {
             if ((board[line][0] !== '')  && (board[line][0] === board[line][1]) && (board[line][1] === board[line][2])) {
                 return board[line][0]; 
@@ -53,10 +56,6 @@ const gameBoard = () => {
             if (board[0][line] && (board[0][line] === board[1][line]) && (board[1][line] === board[2][line])) {
                 return board[0][line]; 
             }
-
-            // if (winning_symbol) {
-            //     return winning_symbol
-            // }
         }
 
         // Check for diagnols 
@@ -68,22 +67,18 @@ const gameBoard = () => {
             return board[0][2]
         }
 
+        // Check tie
+        if (moveCount === 9) {
+            return 'tie'
+        }
     } 
 
     const reset = () => board.forEach((row, index) => (board[index] = ['', '', '']));   
 
-    // const reset = () => (board = [
-    //     ['', '', ''],
-    //     ['', '', ''],
-    //     ['', '', '']
-    // ]);
-
-    return {board, playerMove, checkWinner, reset}
+    return {board, playerMove, checkWinnerAndTie, reset}
 }
 
 
-// const gameInstance = game();
-const board = gameBoard();
-// board.checkWinner();
-console.log(board.checkWinner());
+// const board = gameBoard();
+// console.log(board.checkWinnerAndTie());
 
