@@ -30,9 +30,9 @@ const player = (name, symbol) => {
 
 const gameBoard = () => {
     let board = [
-        ['O', 'X', ''],
-        ['O', 'O', 'O'],
-        ['', '', 'O']
+        ['O', 'X', 'X'],
+        ['X', '', 'O'],
+        ['X', 'O', 'O']
     ]
 
     const playerMove = (symb, row, col) => {
@@ -44,48 +44,31 @@ const gameBoard = () => {
     }
 
     // Dom element with click event listener that runs playerMove(), then checks for gameOver() after move
-    const checkForWinner = () => {
-        for (let col = 0; col < board.length; col++) {
-            // cols go from 0 to length of array
-            // array[][col]
-        }
-    } 
-
     const checkWinner = () => {
-        let row1 = board[0];
-        let row2 = board[1];
-        let row3 = board[2];
-        let col1 = [board[0][0], board[1][0], board[2][0]];
-        let col2 = [board[0][1], board[1][1], board[2][1]];
-        let col3 = [board[0][2], board[1][2], board[2][2]];
-        let diagStart = [board[0][0], board[1][1], board[2][2]];
-        let diagEnd = [board[0][2], board[1][1], board[2][0]];
-
-        const lines = [row1, row2, row3, col1, col2, col3, diagStart, diagEnd];
-
-        for (let line of lines) {
-            let xWinner = true;
-            let oWinner = true;
-
-            for (let x = 0; x < line.length; x++) {
-                if (line[x] !== 'X') {
-                    xWinner = false;
-                } 
-
-                if (line[x] !== 'O') {
-                    oWinner = false;
-                }
+        for (let line = 0; line < board.length; line++) {
+            if ((board[line][0] !== '')  && (board[line][0] === board[line][1]) && (board[line][1] === board[line][2])) {
+                return board[line][0]; 
             }
 
-            if (xWinner === true) {
-                return 'X'
+            if (board[0][line] && (board[0][line] === board[1][line]) && (board[1][line] === board[2][line])) {
+                return board[0][line]; 
             }
 
-            if (oWinner === true) {
-                return 'O'
-            }
+            // if (winning_symbol) {
+            //     return winning_symbol
+            // }
         }
-    }
+
+        // Check for diagnols 
+        if ((board[0][0] !== '') && (board[0][0] === board[1][1]) && (board[1][1] === board[2][2])) {
+            return board[0][0]
+        }
+
+        if ((board[0][2] !== '') && (board[0][2] === board[1][1]) && (board[1][1] === board[2][0]) ) {
+            return board[0][2]
+        }
+
+    } 
 
     const reset = () => board.forEach((row, index) => (board[index] = ['', '', '']));   
 
