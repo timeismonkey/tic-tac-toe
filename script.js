@@ -2,14 +2,11 @@
 const gameController = () => {
     let currentSymbol = 'X';
     let winner;
-    
-    displayController();
-    const board = gameBoard();
-    // console.log(board.board);
-
+    const board = gameBoard.board;
 
     let  player1 = player('Doug', 'X');
     let player2 = player('Mat', 'O');
+
 
     // Set a player's turn to true
     // player1.updateTurn();
@@ -27,14 +24,28 @@ const player = (name, symbol) => {
     return {name, symbol, getScore, addScore, getTurn, updateTurn}
 }
 
-const gameBoard = () => {
+const gameBoard = (function() {
     let moveCount = 0;
 
-    let row1 = Array.from(document.querySelectorAll('.row1  span'));
-    let row2 = Array.from(document.querySelectorAll('.row2 span'));
-    let row3 = Array.from(document.querySelectorAll('.row3 span'));
+    const board = [];
+    for (let i = 1; i <= 3; i++) {
+        const row = [];
+        for (let j = 1; j <= 3; j++) {
+            const cell = document.createElement('span');
+            cell.classList.add('cell');
+            cell.dataset.row = i;
+            cell.dataset.col = j;
+            row.push(cell);
+        }
+        board.push(row)
+    }
 
-    let board = [row1, row2, row3]
+    // console.log(board);
+    // let row1 = Array.from(document.querySelectorAll('.row1  span'));
+    // let row2 = Array.from(document.querySelectorAll('.row2 span'));
+    // let row3 = Array.from(document.querySelectorAll('.row3 span'));
+
+    // let board = [row1, row2, row3]
 
     // const playerMove = (symb, row, col) => {
     //     if (board[row][col].innerHTML === ''){
@@ -45,7 +56,7 @@ const gameBoard = () => {
     //      return false 
     // }
 
-    const playerMove = (cell) => {
+    const playerMove = (symbol, cell) => {
         if (cell.innerHTML === '') {
             cell.innerHTML = currentSymbol;
             moveCount += 1;
@@ -92,37 +103,55 @@ const gameBoard = () => {
     const reset = () => board.forEach((row, index) => (board[index].forEach((item) => item.innerHTML = '')));   
 
     return {board, playerMove, checkWinnerAndTie, reset}
-}
+})();
 
-const displayController = (function {
+const displayController = (function() {
     let main = document.querySelector('.main')
 
-    // Create gameboard element and render it to the page 
-    const boardContainer = document.createElement('div');
-    boardContainer.classList.add('board-container')
+    // Create a board element
+    const board = gameBoard.board;
+    const boardElement = document.createElement('div');
+    boardElement.classList.add('.board');
 
+    // Add row elements to boardElement
     for (let i = 1; i <= 3; i++) {
         const row = document.createElement('div');
         row.classList.add(`row`, `row${i}`);
-        row.dataset.row = i;
-        for (let j = 1; j <= 3; j++) {
-            const cell = document.createElement('span');
-            cell.classList.add('cell');
-            cell.dataset.row = i;
-            cell.dataset.col = j;
-            row.appendChild(cell);
+
+        for (let j = 0; j < board[i-1].length; j++) {
+            row.appendChild(board[i-1][j]);
         }
-        boardContainer.appendChild(row)
+        boardElement.appendChild(row)
     }
 
-    main.appendChild(boardContainer);
+    main.appendChild(boardElement);
+    return {boardElement}
 
-    return {boardContainer}
+    // Create gameboard element and render it to the page 
+    // const boardContainer = document.createElement('div');
+    // boardContainer.classList.add('board-container')
+
+
+
+    // for (let i = 1; i <= 3; i++) {
+    //     const row = document.createElement('div');
+    //     row.classList.add(`row`, `row${i}`);
+    //     row.dataset.row = i;
+    //     for (let j = 1; j <= 3; j++) {
+    //         const cell = document.createElement('span');
+    //         cell.classList.add('cell');
+    //         cell.dataset.row = i;
+    //         cell.dataset.col = j;
+    //         row.appendChild(cell);
+    //     }
+    //     boardContainer.appendChild(row)
+    // }
 })();
 
 
+// gameBoard();
 
-game()
+// game()
 
 // displayController()
 
