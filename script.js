@@ -127,63 +127,22 @@
 
 // Game object will host the game
 const gameController = () => {
-    let currentSymbol = 'X';
+    let currentSymbol = 'X'; // Use random
     let winner;
     const board = gameBoard.getBoard();
 
-    let  player1 = player('Doug', 'X');
+    let  player1 = player('Doug', 'X'); // Use random to pick symbol or allow users to choose
     let player2 = player('Mat', 'O');
 
+    displayController.renderBoard(board);
 
-    // Set a player's turn to true
-    // player1.updateTurn();
+    // Game controller is going to keep track of the current symbol, the winner
+    // Will create 2 players
+    // Will render the board calling renderBoard(bpard), passing in the current state of the gameboard
+    // 
+
+
 };
-
-const player = (name, symbol) => {
-    let score = 0;
-    let turn = false;
-
-    const getScore = () => (score);
-    const addScore = () => (++score);
-    const getTurn = () => (turn);
-    const updateTurn = () => (turn = !turn);
-
-    return {name, symbol, getScore, addScore, getTurn, updateTurn}
-}
-
-const displayController = (function() {
-    let main = document.querySelector('.main')
-    const boardElement = document.createElement('div');
-    boardElement.classList.add('.board');
-    
-    // renderBoard is called every time a new move is made
-    const renderBoard = () => {
-        boardElement.innerHTML = '';
-        const board = gameBoard.getBoard();
-
-        // Add row elements to boardElement
-        for (let i = 1; i <= board.length; i++) {
-            const row = document.createElement('div');
-            row.classList.add(`row`, `row${i}`);
-
-            for (let j = 1; j <= board[i-1].length; j++) {
-                const cell = document.createElement('span');
-                cell.classList.add('cell');
-                cell.dataset.row = i;
-                cell.dataset.col = j;
-                cell.innerHTML = board[i-1][j-1];
-                row.appendChild(cell);
-            }
-            boardElement.appendChild(row)
-        }
-
-        main.appendChild(boardElement);
-    }
-
-    {renderBoard}
-})();
-
-
 
 const gameBoard = (function() {
     let moveCount = 0;
@@ -249,3 +208,51 @@ const gameBoard = (function() {
     return {getBoard, playerMove, checkWinner, checkTie, resetBoard}
 })();
 
+
+const player = (name, symbol) => {
+    let score = 0;
+    let turn = false;
+
+    const getScore = () => (score);
+    const addScore = () => (++score);
+    const getTurn = () => (turn);
+    const updateTurn = () => (turn = !turn);
+
+    return {name, symbol, getScore, addScore, getTurn, updateTurn}
+}
+
+const displayController = (function() {
+    let main = document.querySelector('.main')
+    const boardElement = document.createElement('div');
+    boardElement.classList.add('.board');
+    
+    // renderBoard is called every time a new move is made
+    const renderBoard = (board) => {
+        boardElement.innerHTML = '';
+        // const board = gameBoard.getBoard();
+
+        // Add row elements to boardElement
+        for (let i = 1; i <= board.length; i++) {
+            const row = document.createElement('div');
+            row.classList.add(`row`, `row${i}`);
+
+            for (let j = 1; j <= board[i-1].length; j++) {
+                const cell = document.createElement('span');
+                cell.classList.add('cell');
+                cell.dataset.row = i;
+                cell.dataset.col = j;
+                cell.innerHTML = board[i-1][j-1];
+                row.appendChild(cell);
+            }
+            boardElement.appendChild(row)
+        }
+
+        main.appendChild(boardElement);
+    }
+
+    
+
+    {renderBoard}
+})();
+
+// After a cell is clicked, you want to check for winner and check for tie
