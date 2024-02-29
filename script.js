@@ -1,28 +1,28 @@
-// Game object will host the game
-const gameController = () => {
-    let currentSymbol = 'X';
-    let winner;
-    const board = gameBoard.getBoard();
+// // Game object will host the game
+// const gameController = () => {
+//     let currentSymbol = 'X';
+//     let winner;
+//     const board = gameBoard.getBoard();
 
-    let  player1 = player('Doug', 'X');
-    let player2 = player('Mat', 'O');
+//     let  player1 = player('Doug', 'X');
+//     let player2 = player('Mat', 'O');
 
 
-    // Set a player's turn to true
-    // player1.updateTurn();
-};
+//     // Set a player's turn to true
+//     // player1.updateTurn();
+// };
 
-const player = (name, symbol) => {
-    let score = 0;
-    let turn = false;
+// const player = (name, symbol) => {
+//     let score = 0;
+//     let turn = false;
 
-    const getScore = () => (score);
-    const addScore = () => (++score);
-    const getTurn = () => (turn);
-    const updateTurn = () => (turn = !turn);
+//     const getScore = () => (score);
+//     const addScore = () => (++score);
+//     const getTurn = () => (turn);
+//     const updateTurn = () => (turn = !turn);
 
-    return {name, symbol, getScore, addScore, getTurn, updateTurn}
-}
+//     return {name, symbol, getScore, addScore, getTurn, updateTurn}
+// }
 
 // const gameBoard = (function() {
 //     let moveCount = 0;
@@ -95,33 +95,92 @@ const player = (name, symbol) => {
 //     return {getBoard, playerMove, checkWinnerAndTie, reset}
 // })();
 
+// const displayController = (function() {
+//     let main = document.querySelector('.main')
+//     const boardElement = document.createElement('div');
+//     boardElement.classList.add('.board');
+    
+//     // renderBoard is only called when page is loaded and when a new
+//     const renderBoard = () => {
+//         // Reference board element
+//         const board = gameBoard.getBoard();
+
+//         // Clear cu
+//         // const boardElement = document.createElement('div');
+//         // boardElement.classList.add('.board');
+
+//         // Add row elements to boardElement
+//         for (let i = 1; i <= 3; i++) {
+//             const row = document.createElement('div');
+//             row.classList.add(`row`, `row${i}`);
+
+//             for (let j = 0; j < board[i-1].length; j++) {
+//                 row.appendChild(board[i-1][j]);
+//             }
+//             boardElement.appendChild(row)
+//         }
+
+//         main.appendChild(boardElement);
+//     }
+// })();
+
+
+// Game object will host the game
+const gameController = () => {
+    let currentSymbol = 'X';
+    let winner;
+    const board = gameBoard.getBoard();
+
+    let  player1 = player('Doug', 'X');
+    let player2 = player('Mat', 'O');
+
+
+    // Set a player's turn to true
+    // player1.updateTurn();
+};
+
+const player = (name, symbol) => {
+    let score = 0;
+    let turn = false;
+
+    const getScore = () => (score);
+    const addScore = () => (++score);
+    const getTurn = () => (turn);
+    const updateTurn = () => (turn = !turn);
+
+    return {name, symbol, getScore, addScore, getTurn, updateTurn}
+}
+
 const displayController = (function() {
     let main = document.querySelector('.main')
     const boardElement = document.createElement('div');
     boardElement.classList.add('.board');
     
-    // renderBoard is only called when page is loaded and when a new
+    // renderBoard is called every time a new move is made
     const renderBoard = () => {
-        // Reference board element
+        boardElement.innerHTML = '';
         const board = gameBoard.getBoard();
 
-        // Clear cu
-        // const boardElement = document.createElement('div');
-        // boardElement.classList.add('.board');
-
         // Add row elements to boardElement
-        for (let i = 1; i <= 3; i++) {
+        for (let i = 1; i <= board.length; i++) {
             const row = document.createElement('div');
             row.classList.add(`row`, `row${i}`);
 
-            for (let j = 0; j < board[i-1].length; j++) {
-                row.appendChild(board[i-1][j]);
+            for (let j = 1; j <= board[i-1].length; j++) {
+                const cell = document.createElement('span');
+                cell.classList.add('cell');
+                cell.dataset.row = i;
+                cell.dataset.col = j;
+                cell.innerHTML = board[i-1][j-1];
+                row.appendChild(cell);
             }
             boardElement.appendChild(row)
         }
 
         main.appendChild(boardElement);
     }
+
+    {renderBoard}
 })();
 
 
@@ -134,11 +193,7 @@ const gameBoard = (function() {
     for (let i = 1; i <= 3; i++) {
         const row = [];
         for (let j = 1; j <= 3; j++) {
-            const cell = document.createElement('span');
-            cell.classList.add('cell');
-            cell.dataset.row = i;
-            cell.dataset.col = j;
-            row.push(cell);
+            row.push('');
         }
         board.push(row)
     }
@@ -146,10 +201,11 @@ const gameBoard = (function() {
     const getBoard = () => (board);
 
     // Log a player's move
-    const playerMove = (symbol, cell) => {
-        if (cell.innerHTML === '') {
-            cell.innerHTML = currentSymbol;
-            moveCount += 1;
+    const playerMove = (symbol, row, col) => {
+        // If cell is empty, update it
+        if (board[row][col] === '') {
+            board[row][col] = symbol;
+            // Update current symbol if move is successful 
             currentSymbol = (currentSymbol === 'X') ? 'O' : 'X';
             return true
         } else {
@@ -157,31 +213,27 @@ const gameBoard = (function() {
         }
     }
 
-    // Add event listener to each cell in the board
-    board.forEach((row) => row.forEach((item) => item.addEventListener('click', (e) => {
-        playerMove(currentSymbol, e.target);
-        checkWinner();
-    })))
-
     // Dom element with click event listener that runs playerMove(), then checks for gameOver() after move
     const checkWinner = () => {
         for (let line = 0; line < board.length; line++) {
-            if ((board[line][0].innerHTML !== '')  && (board[line][0].innerHTML === board[line][1].innerHTML) && (board[line][1].innerHTML === board[line][2].innerHTML)) {
-                return board[line][0].innerHTML 
+            // Check each row
+            if ((board[line][0] !== '')  && (board[line][0] === board[line][1]) && (board[line][1] === board[line][2])) {
+                return board[line][0]
             }
 
-            if (board[0][line].innerHTML && (board[0][line].innerHTML === board[1][line].innerHTML) && (board[1][line].innerHTML === board[2][line].innerHTML)) {
-                return board[0][line].innerHTML 
+            // Check each column
+            if (board[0][line] && (board[0][line] === board[1][line]) && (board[1][line] === board[2][line])) {
+                return board[0][line]
             }
         }
 
         // Check for diagnols 
-        if ((board[0][0].innerHTML !== '') && (board[0][0].innerHTML === board[1][1].innerHTML) && (board[1][1].innerHTML === board[2][2].innerHTML)) {
-            return board[0][0].innerHTML
+        if ((board[0][0]!== '') && (board[0][0] === board[1][1]) && (board[1][1] === board[2][2])) {
+            return board[0][0]
         }
 
-        if ((board[0][2].innerHTML !== '') && (board[0][2].innerHTML === board[1][1].innerHTML) && (board[1][1].innerHTML === board[2][0].innerHTML) ) {
-            return board[0][2].innerHTML
+        if ((board[0][2] !== '') && (board[0][2] === board[1][1]) && (board[1][1] === board[2][0]) ) {
+            return board[0][2]
         }
     }
     
@@ -192,23 +244,8 @@ const gameBoard = (function() {
         }   
     }
 
-    const reset = () => board.forEach((row, index) => (board[index].forEach((item) => item.innerHTML = '')));   
+    const resetBoard = () => board.forEach((row, index) => (board[index] = ['', '', '']))   
 
-    return {getBoard, playerMove, checkWinnerAndTie, reset}
+    return {getBoard, playerMove, checkWinner, checkTie, resetBoard}
 })();
-
-// gameBoard();
-
-// game()
-
-// displayController()
-
-
-// const board = gameBoard();
-// console.log(board.checkWinnerAndTie());
-
-// console.log(board.board);
-
-// The game function will hold the game and the players, it will control the flow of the game. It calls the game function to create a game object
-// The game object will create the gameboard, add event listeners to the gameboard to listen to players moves 
 
