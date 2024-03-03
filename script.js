@@ -1,258 +1,120 @@
-// // Game object will host the game
-// const gameController = () => {
-//     let currentSymbol = 'X';
-//     let winner;
-//     const board = gameBoard.getBoard();
+let mainContainer = document.querySelector('.main');
+let startBtn = mainContainer.querySelector('#start-btn');
 
-//     let  player1 = player('Doug', 'X');
-//     let player2 = player('Mat', 'O');
+startBtn.addEventListener('click', () => gameController.start());
 
-
-//     // Set a player's turn to true
-//     // player1.updateTurn();
-// };
-
-// const player = (name, symbol) => {
-//     let score = 0;
-//     let turn = false;
-
-//     const getScore = () => (score);
-//     const addScore = () => (++score);
-//     const getTurn = () => (turn);
-//     const updateTurn = () => (turn = !turn);
-
-//     return {name, symbol, getScore, addScore, getTurn, updateTurn}
-// }
-
-// const gameBoard = (function() {
-//     let moveCount = 0;
-
-//     // Create an empty gameboard
-//     const board = [];
-//     for (let i = 1; i <= 3; i++) {
-//         const row = [];
-//         for (let j = 1; j <= 3; j++) {
-//             const cell = document.createElement('span');
-//             cell.classList.add('cell');
-//             cell.dataset.row = i;
-//             cell.dataset.col = j;
-//             row.push(cell);
-//         }
-//         board.push(row)
-//     }
-
-//     const getBoard = () => (board);
-
-//     // Log a player's move
-//     const playerMove = (symbol, cell) => {
-//         if (cell.innerHTML === '') {
-//             cell.innerHTML = currentSymbol;
-//             moveCount += 1;
-//             currentSymbol = (currentSymbol === 'X') ? 'O' : 'X';
-//             return true
-//         } else {
-//             return false
-//         }
-//     }
-
-//     // Add event listener to each cell in the board
-//     board.forEach((row) => row.forEach((item) => item.addEventListener('click', (e) => {
-//         playerMove(currentSymbol, e.target);
-//         checkWinner();
-//     })))
-
-//     // Dom element with click event listener that runs playerMove(), then checks for gameOver() after move
-//     const checkWinner = () => {
-//         for (let line = 0; line < board.length; line++) {
-//             if ((board[line][0].innerHTML !== '')  && (board[line][0].innerHTML === board[line][1].innerHTML) && (board[line][1].innerHTML === board[line][2].innerHTML)) {
-//                 return board[line][0].innerHTML 
-//             }
-
-//             if (board[0][line].innerHTML && (board[0][line].innerHTML === board[1][line].innerHTML) && (board[1][line].innerHTML === board[2][line].innerHTML)) {
-//                 return board[0][line].innerHTML 
-//             }
-//         }
-
-//         // Check for diagnols 
-//         if ((board[0][0].innerHTML !== '') && (board[0][0].innerHTML === board[1][1].innerHTML) && (board[1][1].innerHTML === board[2][2].innerHTML)) {
-//             return board[0][0].innerHTML
-//         }
-
-//         if ((board[0][2].innerHTML !== '') && (board[0][2].innerHTML === board[1][1].innerHTML) && (board[1][1].innerHTML === board[2][0].innerHTML) ) {
-//             return board[0][2].innerHTML
-//         }
-//     }
-    
-//     const checkTie = () => {
-//         // Check tie
-//         if (moveCount === 9) {
-//             return true
-//         }   
-//     }
-
-//     const reset = () => board.forEach((row, index) => (board[index].forEach((item) => item.innerHTML = '')));   
-
-//     return {getBoard, playerMove, checkWinnerAndTie, reset}
-// })();
-
-// const displayController = (function() {
-//     let main = document.querySelector('.main')
-//     const boardElement = document.createElement('div');
-//     boardElement.classList.add('.board');
-    
-//     // renderBoard is only called when page is loaded and when a new
-//     const renderBoard = () => {
-//         // Reference board element
-//         const board = gameBoard.getBoard();
-
-//         // Clear cu
-//         // const boardElement = document.createElement('div');
-//         // boardElement.classList.add('.board');
-
-//         // Add row elements to boardElement
-//         for (let i = 1; i <= 3; i++) {
-//             const row = document.createElement('div');
-//             row.classList.add(`row`, `row${i}`);
-
-//             for (let j = 0; j < board[i-1].length; j++) {
-//                 row.appendChild(board[i-1][j]);
-//             }
-//             boardElement.appendChild(row)
-//         }
-
-//         main.appendChild(boardElement);
-//     }
-// })();
-
-
-// Game object will host the game
-const gameController = () => {
-    let currentSymbol = 'X'; // Use random
+const gameController = (() => {
+    let gameEnd;
     let winner;
-    const board = gameBoard.getBoard();
+    let players = [];
+    let currentPlayer;
 
-    let  player1 = player('Doug', 'X'); // Use random to pick symbol or allow users to choose
-    let player2 = player('Mat', 'O');
+    // const getStartingSymbol = () => startingSymbol = random();
+    const getPlayers = () => {
+        let player1 = mainContainer.querySelector('#player-1-name').value;
+        let player2 = mainContainer.querySelector('#player-2-name').value;
+        player1 = Player(player1, 'X');
+        player2 = Player(player2, 'O');
+        players.push(player1, player2);
 
-    displayController.renderBoard(board);
+        mainContainer.querySelector('#player-1-name').value = '';
+        mainContainer.querySelector('#player-2-name').value = '';
+    };
 
-    // Game controller is going to keep track of the current symbol, the winner
-    // Will create 2 players
-    // Will render the board calling renderBoard(bpard), passing in the current state of the gameboard
-    // 
+    const start = () => {
+        // Store user input players in 'players'
+        getPlayers();
 
+        // Set starting player
+        currentPlayer = players[0];
 
-};
+        // Render game
+        displayController.clearMain();
+        gameBoard.render();
+        // console.log(players);
+    };
 
-const gameBoard = (function() {
-    let moveCount = 0;
+    const handleCellClick = (e) => {
+        console.log('Cell click');
+        const row = e.target.dataset.row;
+        const col = e.target.dataset.col;
+        const symbol = currentPlayer.symbol;
 
-    // Create an empty gameboard
-    const board = [];
-    for (let i = 1; i <= 3; i++) {
-        const row = [];
-        for (let j = 1; j <= 3; j++) {
+        gameBoard.updateGameBoard(row, col, symbol);
+        displayController.removeBoard();
+        gameBoard.render();
+    };
+
+    const updateCurrentPlayer = () => {
+        currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
+    };
+
+    return { start, handleCellClick };
+})();
+
+const gameBoard = (() => {
+    let board = [];
+
+    for (let r = 0; r < 3; r++) {
+        let row = [];
+
+        for (let c = 0; c < 3; c++) {
             row.push('');
         }
-        board.push(row)
+
+        board.push(row);
     }
 
-    const getBoard = () => (board);
+    const getBoard = () => board;
 
-    // Log a player's move
-    const playerMove = (symbol, row, col) => {
-        // If cell is empty, update it
-        if (board[row][col] === '') {
-            board[row][col] = symbol;
-            // Update current symbol if move is successful 
-            currentSymbol = (currentSymbol === 'X') ? 'O' : 'X';
-            return true
-        } else {
-            return false
-        }
-    }
+    const updateGameBoard = (row, col, symbol) => (board[row][col] = symbol);
 
-    // Dom element with click event listener that runs playerMove(), then checks for gameOver() after move
-    const checkWinner = () => {
-        for (let line = 0; line < board.length; line++) {
-            // Check each row
-            if ((board[line][0] !== '')  && (board[line][0] === board[line][1]) && (board[line][1] === board[line][2])) {
-                return board[line][0]
+    // Render board element
+    const render = () => {
+        let boardElement = document.createElement('div');
+        boardElement.classList.add('board');
+
+        for (let r = 0; r < board.length; r++) {
+            let rowElement = document.createElement('div');
+            rowElement.classList.add('row');
+            for (let c = 0; c < board[r].length; c++) {
+                let cellElement = document.createElement('div');
+                cellElement.classList.add('cell');
+                // cellElement.setAttribute('id', `row-${r} col-${c}`);
+                cellElement.dataset.row = `${r}`;
+                cellElement.dataset.col = `${c}`;
+                cellElement.innerHTML = board[r][c];
+                rowElement.appendChild(cellElement);
             }
-
-            // Check each column
-            if (board[0][line] && (board[0][line] === board[1][line]) && (board[1][line] === board[2][line])) {
-                return board[0][line]
-            }
+            boardElement.appendChild(rowElement);
         }
+        document.querySelector('.main').appendChild(boardElement);
 
-        // Check for diagnols 
-        if ((board[0][0]!== '') && (board[0][0] === board[1][1]) && (board[1][1] === board[2][2])) {
-            return board[0][0]
-        }
+        // Add event listeners to cells
+        boardElement
+            .querySelectorAll('.cell')
+            .forEach((cell) =>
+                cell.addEventListener('click', gameController.handleCellClick)
+            );
+    };
 
-        if ((board[0][2] !== '') && (board[0][2] === board[1][1]) && (board[1][1] === board[2][0]) ) {
-            return board[0][2]
-        }
-    }
-    
-    const checkTie = () => {
-        // Check tie
-        if (moveCount === 9) {
-            return true
-        }   
-    }
-
-    const resetBoard = () => board.forEach((row, index) => (board[index] = ['', '', '']))   
-
-    return {getBoard, playerMove, checkWinner, checkTie, resetBoard}
+    return { getBoard, updateGameBoard, render };
 })();
 
+const Player = (name, symbol) => {
+    return { name, symbol };
+};
 
-const player = (name, symbol) => {
-    let score = 0;
-    let turn = false;
+const displayController = (() => {
+    const clearMain = () => {
+        mainContainer
+            .querySelectorAll('input')
+            .forEach((input) => (input.style.display = 'none'));
+        startBtn.style.display = 'none';
+    };
 
-    const getScore = () => (score);
-    const addScore = () => (++score);
-    const getTurn = () => (turn);
-    const updateTurn = () => (turn = !turn);
+    const removeBoard = () =>
+        mainContainer.removeChild(mainContainer.querySelector('.board'));
 
-    return {name, symbol, getScore, addScore, getTurn, updateTurn}
-}
-
-const displayController = (function() {
-    let main = document.querySelector('.main')
-    const boardElement = document.createElement('div');
-    boardElement.classList.add('.board');
-    
-    // renderBoard is called every time a new move is made
-    const renderBoard = (board) => {
-        boardElement.innerHTML = '';
-        // const board = gameBoard.getBoard();
-
-        // Add row elements to boardElement
-        for (let i = 1; i <= board.length; i++) {
-            const row = document.createElement('div');
-            row.classList.add(`row`, `row${i}`);
-
-            for (let j = 1; j <= board[i-1].length; j++) {
-                const cell = document.createElement('span');
-                cell.classList.add('cell');
-                cell.dataset.row = i;
-                cell.dataset.col = j;
-                cell.innerHTML = board[i-1][j-1];
-                row.appendChild(cell);
-            }
-            boardElement.appendChild(row)
-        }
-
-        main.appendChild(boardElement);
-    }
-
-    
-
-    {renderBoard}
+    return { clearMain, removeBoard };
 })();
-
-// After a cell is clicked, you want to check for winner and check for tie
