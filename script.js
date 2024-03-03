@@ -3,55 +3,6 @@ let startBtn = mainContainer.querySelector('#start-btn');
 
 startBtn.addEventListener('click', () => gameController.start());
 
-const gameController = (() => {
-    let gameEnd;
-    let winner;
-    let players = [];
-    let currentPlayer;
-
-    // const getStartingSymbol = () => startingSymbol = random();
-    const getPlayers = () => {
-        let player1 = mainContainer.querySelector('#player-1-name').value;
-        let player2 = mainContainer.querySelector('#player-2-name').value;
-        player1 = Player(player1, 'X');
-        player2 = Player(player2, 'O');
-        players.push(player1, player2);
-
-        mainContainer.querySelector('#player-1-name').value = '';
-        mainContainer.querySelector('#player-2-name').value = '';
-    };
-
-    const start = () => {
-        // Store user input players in 'players'
-        getPlayers();
-
-        // Set starting player
-        currentPlayer = players[0];
-
-        // Render game
-        displayController.clearMain();
-        gameBoard.render();
-        // console.log(players);
-    };
-
-    const handleCellClick = (e) => {
-        console.log('Cell click');
-        const row = e.target.dataset.row;
-        const col = e.target.dataset.col;
-        const symbol = currentPlayer.symbol;
-
-        gameBoard.updateGameBoard(row, col, symbol);
-        // displayController.removeBoard();
-        gameBoard.render();
-    };
-
-    const updateCurrentPlayer = () => {
-        currentPlayer = currentPlayer === players[0] ? players[1] : players[0];
-    };
-
-    return { start, handleCellClick };
-})();
-
 const gameBoard = (() => {
     let board = [];
 
@@ -120,4 +71,56 @@ const displayController = (() => {
     };
 
     return { clearMain };
+})();
+
+const gameController = (() => {
+    let gameEnd;
+    let winner;
+    let players = [];
+    let currentPlayer;
+    let board = gameBoard.getBoard()
+
+    // const getStartingSymbol = () => startingSymbol = random();
+    const getPlayers = () => {
+        let player1 = mainContainer.querySelector('#player-1-name').value;
+        let player2 = mainContainer.querySelector('#player-2-name').value;
+        player1 = Player(player1, 'X');
+        player2 = Player(player2, 'O');
+        players.push(player1, player2);
+
+        mainContainer.querySelector('#player-1-name').value = '';
+        mainContainer.querySelector('#player-2-name').value = '';
+    };
+
+    const start = () => {
+        // Store user input player's names in 'players'
+        getPlayers();
+
+        // Set starting player
+        currentPlayer = players[0];
+
+        // Render game
+        displayController.clearMain();
+        gameBoard.render();
+    };
+
+    const handleCellClick = (e) => {
+        const row = e.target.dataset.row;
+        const col = e.target.dataset.col;
+        const symbol = currentPlayer.symbol;
+
+        if (board[row][col] === '') {
+            gameBoard.updateGameBoard(row, col, symbol);
+            updateCurrentPlayer();
+            gameBoard.render();
+        } else {
+            console.log('Already filled');
+            // Create a method in displayController() that turns the symbol chose cell red and shakes the symbol
+        }
+
+    };
+
+    const updateCurrentPlayer = () => (currentPlayer = (currentPlayer === players[0]) ? players[1] : players[0]);
+
+    return { start, handleCellClick };
 })();
