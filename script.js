@@ -41,7 +41,7 @@ const gameController = (() => {
         const symbol = currentPlayer.symbol;
 
         gameBoard.updateGameBoard(row, col, symbol);
-        displayController.removeBoard();
+        // displayController.removeBoard();
         gameBoard.render();
     };
 
@@ -71,6 +71,11 @@ const gameBoard = (() => {
 
     // Render board element
     const render = () => {
+        // If boardElement already exists, clear it
+        if (mainContainer.querySelector('.board')) {
+            mainContainer.removeChild(mainContainer.querySelector('.board'));
+        }
+
         let boardElement = document.createElement('div');
         boardElement.classList.add('board');
 
@@ -88,7 +93,8 @@ const gameBoard = (() => {
             }
             boardElement.appendChild(rowElement);
         }
-        document.querySelector('.main').appendChild(boardElement);
+
+        mainContainer.appendChild(boardElement);
 
         // Add event listeners to cells
         boardElement
@@ -113,8 +119,5 @@ const displayController = (() => {
         startBtn.style.display = 'none';
     };
 
-    const removeBoard = () =>
-        mainContainer.removeChild(mainContainer.querySelector('.board'));
-
-    return { clearMain, removeBoard };
+    return { clearMain };
 })();
