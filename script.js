@@ -1,5 +1,6 @@
 let mainContainer = document.querySelector('.main');
 let startBtn = mainContainer.querySelector('#start-btn');
+let winnerModal = document.querySelector('dialog');
 
 startBtn.addEventListener('click', () => gameController.start());
 
@@ -70,6 +71,10 @@ const displayController = (() => {
         startBtn.style.display = 'none';
     };
 
+    const showWinner = () => {
+        
+    }
+
     return { clearMain };
 })();
 
@@ -78,7 +83,7 @@ const gameController = (() => {
     let winner;
     let players = [];
     let currentPlayer;
-    let board = gameBoard.getBoard()
+    let board = gameBoard.getBoard();
 
     // const getStartingSymbol = () => startingSymbol = random();
     const getPlayers = () => {
@@ -104,6 +109,34 @@ const gameController = (() => {
         gameBoard.render();
     };
 
+    const checkWinner = () => {
+        for (let i = 0; i < 3; i++) {
+            // Check each row
+            if ((board[i][0] !== '') && (board[i][0] === board[i][1] && (board[i][1] === board[i][2]))) {
+                winner = currentPlayer;
+                return true
+            }
+
+            // Check each column
+            if ((board[0][i] !== '') && (board[0][i] === board[1][i] && (board[1][i] === board[2][i]))) {
+                winner = currentPlayer;
+                return true
+            }
+        }
+
+        // Check first diagnol
+        if ((board[0][0] !== '') && (board[0][0] === board[1][1]) && (board[1][1] === board[2][2])) {
+            winner = currentPlayer;
+            return true
+        }
+
+        // Check second diagnol
+        if ((board[0][2] !== '') && (board[0][2] === board[1][1]) && (board[1][1] === board[2][0])) {
+            winner = currentPlayer;
+            return true
+        }
+    }
+
     const handleCellClick = (e) => {
         const row = e.target.dataset.row;
         const col = e.target.dataset.col;
@@ -111,16 +144,21 @@ const gameController = (() => {
 
         if (board[row][col] === '') {
             gameBoard.updateGameBoard(row, col, symbol);
+            // Check for winner
+            if (checkWinner()) {
+                // displayController.showWinner(winner);                
+            }
             updateCurrentPlayer();
             gameBoard.render();
         } else {
             console.log('Already filled');
             // Create a method in displayController() that turns the symbol chose cell red and shakes the symbol
         }
-
     };
 
-    const updateCurrentPlayer = () => (currentPlayer = (currentPlayer === players[0]) ? players[1] : players[0]);
+    const updateCurrentPlayer = () =>
+        (currentPlayer =
+            currentPlayer === players[0] ? players[1] : players[0]);
 
     return { start, handleCellClick };
 })();
