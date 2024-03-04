@@ -1,6 +1,5 @@
 let mainContainer = document.querySelector('.main');
 let startBtn = mainContainer.querySelector('#start-btn');
-let winnerModal = document.querySelector('dialog');
 
 startBtn.addEventListener('click', () => gameController.start());
 
@@ -64,6 +63,11 @@ const Player = (name, symbol) => {
 };
 
 const displayController = (() => {
+    let gameEndDialog = document.querySelector('dialog');
+    let closeModal = gameEndDialog.querySelector('button');
+    let outcomeElement = gameEndDialog.querySelector('.outcome');
+    // let resetBtn = mainContainer.querySelector('#reset-btn');
+
     const clearMain = () => {
         mainContainer
             .querySelectorAll('input')
@@ -72,14 +76,25 @@ const displayController = (() => {
     };
 
     const showWinner = () => {
-        
+        outcomeElement.innerHTML = `${gameController.winner} wins!`;
+        gameEndDialog.showModal();
+    };
+
+    const showTie = () => {
+        outcomeElement.innerHTML = 'Tie!';
+        gameEndDialog.showModal();
     }
 
-    return { clearMain };
+    closeModal.addEventListener('click', () => gameEndDialog.close());
+
+    // resetBtn.addEventListener('click', )
+
+    return { clearMain, showWinner, showTie };
 })();
 
 const gameController = (() => {
     let gameEnd;
+    let moveCount = 0;
     let winner;
     let players = [];
     let currentPlayer;
@@ -112,30 +127,48 @@ const gameController = (() => {
     const checkWinner = () => {
         for (let i = 0; i < 3; i++) {
             // Check each row
-            if ((board[i][0] !== '') && (board[i][0] === board[i][1] && (board[i][1] === board[i][2]))) {
+            if (
+                board[i][0] !== '' &&
+                board[i][0] === board[i][1] &&
+                board[i][1] === board[i][2]
+            ) {
                 winner = currentPlayer;
-                return true
+                return true;
             }
 
             // Check each column
-            if ((board[0][i] !== '') && (board[0][i] === board[1][i] && (board[1][i] === board[2][i]))) {
+            if (
+                board[0][i] !== '' &&
+                board[0][i] === board[1][i] &&
+                board[1][i] === board[2][i]
+            ) {
                 winner = currentPlayer;
-                return true
+                return true;
             }
         }
 
         // Check first diagnol
-        if ((board[0][0] !== '') && (board[0][0] === board[1][1]) && (board[1][1] === board[2][2])) {
+        if (
+            board[0][0] !== '' &&
+            board[0][0] === board[1][1] &&
+            board[1][1] === board[2][2]
+        ) {
             winner = currentPlayer;
-            return true
+            return true;
         }
 
         // Check second diagnol
-        if ((board[0][2] !== '') && (board[0][2] === board[1][1]) && (board[1][1] === board[2][0])) {
+        if (
+            board[0][2] !== '' &&
+            board[0][2] === board[1][1] &&
+            board[1][1] === board[2][0]
+        ) {
             winner = currentPlayer;
-            return true
+            return true;
         }
-    }
+    };
+
+    const checkTie = () => (moveCount === 9) ? true : false;
 
     const handleCellClick = (e) => {
         const row = e.target.dataset.row;
@@ -144,9 +177,15 @@ const gameController = (() => {
 
         if (board[row][col] === '') {
             gameBoard.updateGameBoard(row, col, symbol);
+            moveCount += 1;
+
             // Check for winner
             if (checkWinner()) {
-                // displayController.showWinner(winner);                
+                displayController.showWinner();
+            }
+
+            if (checkTie()) {
+                displayController.showTie();
             }
             updateCurrentPlayer();
             gameBoard.render();
@@ -160,5 +199,7 @@ const gameController = (() => {
         (currentPlayer =
             currentPlayer === players[0] ? players[1] : players[0]);
 
-    return { start, handleCellClick };
+    const getWinner = () => winner;
+
+    return { start, handleCellClick, getWinner };
 })();
