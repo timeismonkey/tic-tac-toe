@@ -68,6 +68,7 @@ const displayController = (() => {
     let resetBtn = mainContainer.querySelector('#reset-btn');
     let playerInput = mainContainer.querySelectorAll('input');
     let startBtn = mainContainer.querySelector('#start-btn');
+    let symbolElements = mainContainer.querySelectorAll('.symbol');
 
     startBtn.addEventListener('click', () => gameController.start());
 
@@ -97,6 +98,11 @@ const displayController = (() => {
     const filledCell = (cell) => {
         let symbol = cell.querySelector('.symbol');
         symbol.classList.add('shake');
+
+        symbol.addEventListener('transitioned', (symbol) => {
+            console.log(symbol);
+            symbol.classList.remove('shake')
+    });
     }
 
     closeModal.addEventListener('click', () => gameEndDialog.close());
