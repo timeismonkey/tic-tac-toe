@@ -64,6 +64,9 @@ const displayController = (() => {
     let outcomeElement = gameEndDialog.querySelector('.outcome');
     let resetBtn = mainContainer.querySelector('#reset-btn');
     let playerInput = mainContainer.querySelectorAll('input');
+    let startBtn = mainContainer.querySelector('#start-btn');
+
+    startBtn.addEventListener('click', () => gameController.start());
 
     const hideInitialMain = () => {
         playerInput.forEach((input) => (input.style.display = 'none'));
@@ -75,10 +78,11 @@ const displayController = (() => {
         playerInput.forEach((input) => input.style.display = 'inline');
         startBtn.style.display = 'inline';
         mainContainer.querySelector('.board').style.display = 'none';
+        resetBtn.style.display = 'none';
     }
 
     const showWinner = () => {
-        outcomeElement.innerHTML = `${gameController.winner} wins!`;
+        outcomeElement.innerHTML = `${gameController.getWinner().name} wins!`;
         gameEndDialog.showModal();
     };
 
@@ -90,10 +94,6 @@ const displayController = (() => {
     closeModal.addEventListener('click', () => gameEndDialog.close());
 
     resetBtn.addEventListener('click', () => gameController.resetGame());
-
-    let startBtn = mainContainer.querySelector('#start-btn');
-
-    startBtn.addEventListener('click', () => gameController.start());
 
     return { showInitialMain, hideInitialMain, showWinner, showTie };
 })();
@@ -107,12 +107,13 @@ const gameController = (() => {
 
     // const getStartingSymbol = () => startingSymbol = random();
     const getPlayers = () => {
-        let player1 = mainContainer.querySelector('#player-1-name').value;
-        let player2 = mainContainer.querySelector('#player-2-name').value;
+        let player1 = mainContainer.querySelector('#player-1-name').value || 'Player1';
+        let player2 = mainContainer.querySelector('#player-2-name').value || 'Player2';
         player1 = Player(player1, 'X');
         player2 = Player(player2, 'O');
         players.push(player1, player2);
 
+        // Clear input field
         mainContainer.querySelector('#player-1-name').value = '';
         mainContainer.querySelector('#player-2-name').value = '';
     };
