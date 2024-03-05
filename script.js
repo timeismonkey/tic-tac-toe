@@ -35,7 +35,7 @@ const gameBoard = (() => {
                 cellElement.classList.add('cell');
                 cellElement.dataset.row = `${r}`;
                 cellElement.dataset.col = `${c}`;
-                let symbol = document.createElement('span');
+                let symbol = document.createElement('div');
                 symbol.classList.add('symbol');
                 symbol.innerHTML = board[r][c];
                 cellElement.appendChild(symbol);
@@ -213,7 +213,7 @@ const gameController = (() => {
             // gameBoard.render();
         } else {
             console.log('Already filled');
-            // displayController(e.target);
+            displayController.filledCell(e.currentTarget);
             // Create a method in displayController() that turns the symbol chose cell red and shakes the symbol
         }
     };
