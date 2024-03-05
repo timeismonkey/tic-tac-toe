@@ -1,7 +1,4 @@
 let mainContainer = document.querySelector('.main');
-let startBtn = mainContainer.querySelector('#start-btn');
-
-startBtn.addEventListener('click', () => gameController.start());
 
 const gameBoard = (() => {
     let board = [
@@ -94,6 +91,10 @@ const displayController = (() => {
 
     resetBtn.addEventListener('click', () => gameController.resetGame());
 
+    let startBtn = mainContainer.querySelector('#start-btn');
+
+    startBtn.addEventListener('click', () => gameController.start());
+
     return { showInitialMain, hideInitialMain, showWinner, showTie };
 })();
 
@@ -103,7 +104,6 @@ const gameController = (() => {
     let winner;
     let players = [];
     let currentPlayer;
-    // let board = gameBoard.getBoard();
 
     // const getStartingSymbol = () => startingSymbol = random();
     const getPlayers = () => {
