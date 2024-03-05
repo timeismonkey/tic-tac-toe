@@ -35,7 +35,10 @@ const gameBoard = (() => {
                 cellElement.classList.add('cell');
                 cellElement.dataset.row = `${r}`;
                 cellElement.dataset.col = `${c}`;
-                cellElement.innerHTML = board[r][c];
+                let symbol = document.createElement('span');
+                symbol.classList.add('symbol');
+                symbol.innerHTML = board[r][c];
+                cellElement.appendChild(symbol);
                 rowElement.appendChild(cellElement);
             }
             boardElement.appendChild(rowElement);
@@ -90,6 +93,10 @@ const displayController = (() => {
         outcomeElement.innerHTML = 'Tie!';
         gameEndDialog.showModal();
     };
+
+    // const filledCell = (cell) => {
+    //     cell.
+    // }
 
     closeModal.addEventListener('click', () => gameEndDialog.close());
 
@@ -205,6 +212,7 @@ const gameController = (() => {
             // gameBoard.render();
         } else {
             console.log('Already filled');
+            // displayController(e.target);
             // Create a method in displayController() that turns the symbol chose cell red and shakes the symbol
         }
     };
