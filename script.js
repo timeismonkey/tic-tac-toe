@@ -94,15 +94,16 @@ const displayController = (() => {
         gameEndDialog.showModal();
     };
 
-    // const filledCell = (cell) => {
-    //     cell.
-    // }
+    const filledCell = (cell) => {
+        let symbol = cell.querySelector('.symbol');
+        symbol.classList.add('shake');
+    }
 
     closeModal.addEventListener('click', () => gameEndDialog.close());
 
     resetBtn.addEventListener('click', () => gameController.resetGame());
 
-    return { showInitialMain, hideInitialMain, showWinner, showTie };
+    return { showInitialMain, hideInitialMain, showWinner, showTie, filledCell };
 })();
 
 const gameController = (() => {
@@ -185,8 +186,8 @@ const gameController = (() => {
     const checkTie = () => (moveCount === 9 ? true : false);
 
     const handleCellClick = (e) => {
-        const row = e.target.dataset.row;
-        const col = e.target.dataset.col;
+        const row = e.currentTarget.dataset.row;
+        const col = e.currentTarget.dataset.col;
         const symbol = currentPlayer.symbol;
         let board = gameBoard.getBoard();
 
