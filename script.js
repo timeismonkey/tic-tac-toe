@@ -4,19 +4,19 @@ let startBtn = mainContainer.querySelector('#start-btn');
 startBtn.addEventListener('click', () => gameController.start());
 
 const gameBoard = (() => {
-    let board = [];
-
-    for (let r = 0; r < 3; r++) {
-        let row = [];
-
-        for (let c = 0; c < 3; c++) {
-            row.push('');
-        }
-
-        board.push(row);
-    }
+    let board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ];
 
     const getBoard = () => board;
+
+    const clearBoard = () => board = [
+        ['', '', ''],
+        ['', '', ''],
+        ['', '', '']
+    ];
 
     const updateGameBoard = (row, col, symbol) => (board[row][col] = symbol);
 
@@ -36,7 +36,6 @@ const gameBoard = (() => {
             for (let c = 0; c < board[r].length; c++) {
                 let cellElement = document.createElement('div');
                 cellElement.classList.add('cell');
-                // cellElement.setAttribute('id', `row-${r} col-${c}`);
                 cellElement.dataset.row = `${r}`;
                 cellElement.dataset.col = `${c}`;
                 cellElement.innerHTML = board[r][c];
@@ -55,7 +54,7 @@ const gameBoard = (() => {
             );
     };
 
-    return { getBoard, updateGameBoard, render };
+    return { getBoard, clearBoard, updateGameBoard, render };
 })();
 
 const Player = (name, symbol) => {
@@ -66,14 +65,20 @@ const displayController = (() => {
     let gameEndDialog = document.querySelector('dialog');
     let closeModal = gameEndDialog.querySelector('button');
     let outcomeElement = gameEndDialog.querySelector('.outcome');
-    // let resetBtn = mainContainer.querySelector('#reset-btn');
+    let resetBtn = mainContainer.querySelector('#reset-btn');
+    let playerInput = mainContainer.querySelectorAll('input');
 
-    const clearMain = () => {
-        mainContainer
-            .querySelectorAll('input')
-            .forEach((input) => (input.style.display = 'none'));
+    const hideInitialMain = () => {
+        playerInput.forEach((input) => (input.style.display = 'none'));
         startBtn.style.display = 'none';
+        resetBtn.style.display = 'inline';
     };
+
+    const showInitialMain = () => {
+        playerInput.forEach((input) => input.style.display = 'inline');
+        startBtn.style.display = 'inline';
+        mainContainer.querySelector('.board').style.display = 'none';
+    }
 
     const showWinner = () => {
         outcomeElement.innerHTML = `${gameController.winner} wins!`;
@@ -83,13 +88,13 @@ const displayController = (() => {
     const showTie = () => {
         outcomeElement.innerHTML = 'Tie!';
         gameEndDialog.showModal();
-    }
+    };
 
     closeModal.addEventListener('click', () => gameEndDialog.close());
 
-    // resetBtn.addEventListener('click', )
+    resetBtn.addEventListener('click', () => gameController.resetGame());
 
-    return { clearMain, showWinner, showTie };
+    return { showInitialMain, hideInitialMain, showWinner, showTie };
 })();
 
 const gameController = (() => {
@@ -98,7 +103,7 @@ const gameController = (() => {
     let winner;
     let players = [];
     let currentPlayer;
-    let board = gameBoard.getBoard();
+    // let board = gameBoard.getBoard();
 
     // const getStartingSymbol = () => startingSymbol = random();
     const getPlayers = () => {
@@ -120,11 +125,12 @@ const gameController = (() => {
         currentPlayer = players[0];
 
         // Render game
-        displayController.clearMain();
+        displayController.hideInitialMain();
         gameBoard.render();
     };
 
     const checkWinner = () => {
+        let board = gameBoard.getBoard();
         for (let i = 0; i < 3; i++) {
             // Check each row
             if (
@@ -168,27 +174,34 @@ const gameController = (() => {
         }
     };
 
-    const checkTie = () => (moveCount === 9) ? true : false;
+    const checkTie = () => (moveCount === 9 ? true : false);
 
     const handleCellClick = (e) => {
         const row = e.target.dataset.row;
         const col = e.target.dataset.col;
         const symbol = currentPlayer.symbol;
+        let board = gameBoard.getBoard();
 
+        // Check if cell is empty
         if (board[row][col] === '') {
             gameBoard.updateGameBoard(row, col, symbol);
             moveCount += 1;
+            gameBoard.render()
 
-            // Check for winner
             if (checkWinner()) {
                 displayController.showWinner();
+                // gameBoard.render();
+                return;
             }
 
             if (checkTie()) {
                 displayController.showTie();
+                // gameBoard.render();
+                return;
             }
+
             updateCurrentPlayer();
-            gameBoard.render();
+            // gameBoard.render();
         } else {
             console.log('Already filled');
             // Create a method in displayController() that turns the symbol chose cell red and shakes the symbol
@@ -201,5 +214,20 @@ const gameController = (() => {
 
     const getWinner = () => winner;
 
-    return { start, handleCellClick, getWinner };
+    const resetGame = () => {
+        // Clear players
+        players = [];
+        // Clear moveCount
+        moveCount = 0;
+        // Clear winner
+        winner = null;
+        // Clear currentPlayer
+        currentPlayer = null;
+        // Clear gameBoard
+        gameBoard.clearBoard();
+        // Show start button and player name inputs
+        displayController.showInitialMain();
+    }
+
+    return { start, handleCellClick, getWinner, resetGame };
 })();
