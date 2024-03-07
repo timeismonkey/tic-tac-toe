@@ -205,21 +205,18 @@ const gameController = (() => {
 
             if (checkWinner()) {
                 displayController.showWinner();
-                // gameBoard.render();
+                endGame();
                 return;
             }
 
             if (checkTie()) {
                 displayController.showTie();
-                // gameBoard.render();
+                endGame();
                 return;
             }
-
             updateCurrentPlayer();
-            // gameBoard.render();
         } else {
             displayController.filledCell(e.currentTarget);
-            // Create a method in displayController() that turns the symbol chose cell red and shakes the symbol
         }
     };
 
@@ -228,6 +225,13 @@ const gameController = (() => {
             currentPlayer === players[0] ? players[1] : players[0]);
 
     const getWinner = () => winner;
+
+    const endGame = () => {
+        // Disable board
+        let cells = mainContainer.querySelectorAll('.cell');
+
+        cells.forEach((cell) => cell.removeEventListener('click', handleCellClick));
+    }
 
     const resetGame = () => {
         // Clear players
