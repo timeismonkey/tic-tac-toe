@@ -83,6 +83,7 @@ const displayController = (() => {
         startBtn.style.display = 'inline';
         mainContainer.querySelector('.board').style.display = 'none';
         resetBtn.style.display = 'none';
+        mainContainer.querySelector('.current-player').style.display = 'none';
     }
 
     const showWinner = () => {
@@ -105,11 +106,18 @@ const displayController = (() => {
         setTimeout(() => cell.classList.remove('red-background'), '500');
     }
 
+    const showCurrentPlayer = () => {
+        const currentPlayerElement = mainContainer.querySelector('.current-player');
+        currentPlayerElement.style.display = 'block';
+        
+        currentPlayerElement.innerHTML = `${gameController.getCurrentPlayer().name}'s turn`;
+    }
+
     closeModal.addEventListener('click', () => gameEndDialog.close());
 
     resetBtn.addEventListener('click', () => gameController.resetGame());
 
-    return { showInitialMain, hideInitialMain, showWinner, showTie, filledCell };
+    return { showInitialMain, hideInitialMain, showWinner, showTie, filledCell, showCurrentPlayer };
 })();
 
 const gameController = (() => {
@@ -132,12 +140,15 @@ const gameController = (() => {
         mainContainer.querySelector('#player-2-name').value = '';
     };
 
+    const getCurrentPlayer = () => currentPlayer;
+
     const start = () => {
         // Store user input player's names in 'players'
         getPlayers();
 
         // Set starting player
         currentPlayer = players[0];
+        displayController.showCurrentPlayer();
 
         // Render game
         displayController.hideInitialMain();
@@ -215,6 +226,7 @@ const gameController = (() => {
                 return;
             }
             updateCurrentPlayer();
+            displayController.showCurrentPlayer();
         } else {
             displayController.filledCell(e.currentTarget);
         }
@@ -248,5 +260,5 @@ const gameController = (() => {
         displayController.showInitialMain();
     }
 
-    return { start, handleCellClick, getWinner, resetGame };
+    return { start, getCurrentPlayer, handleCellClick, getWinner, resetGame };
 })();
