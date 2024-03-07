@@ -29,6 +29,6 @@
 }
 
 .shake {
-    animation: horizontal-shaking 2s;
+    animation: horizontal-shaking .5s;
 }
 
