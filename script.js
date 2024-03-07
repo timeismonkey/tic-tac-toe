@@ -98,11 +98,11 @@ const displayController = (() => {
     const filledCell = (cell) => {
         let symbol = cell.querySelector('.symbol');
         symbol.classList.add('shake');
+        symbol.addEventListener("animationend", () => symbol.classList.remove("shake"));
 
-        symbol.addEventListener('transitioned', (symbol) => {
-            console.log(symbol);
-            symbol.classList.remove('shake')
-    });
+        // Set cell background to red
+        cell.classList.add('red-background');
+        setTimeout(() => cell.classList.remove('red-background'), '500');
     }
 
     closeModal.addEventListener('click', () => gameEndDialog.close());
@@ -218,7 +218,6 @@ const gameController = (() => {
             updateCurrentPlayer();
             // gameBoard.render();
         } else {
-            console.log('Already filled');
             displayController.filledCell(e.currentTarget);
             // Create a method in displayController() that turns the symbol chose cell red and shakes the symbol
         }
