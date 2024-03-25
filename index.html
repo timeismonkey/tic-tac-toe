@@ -8,9 +8,13 @@
     </head>
     <body>
         <div class="main">
-            <input type="text" placeholder="Player 1 name" id="player-1-name" />
-            <input type="text" placeholder="Player 2 name" id="player-2-name" />
-            <button id="start-btn">Start</button>
+            <div class="initial-page-container">
+                <div class="name-input-container">
+                    <input type="text" placeholder="Player 1 name" class="name-input" id="player-1-name"/>
+                    <input type="text" placeholder="Player 2 name" class="name-input" id="player-2-name"/>
+                </div>
+                <button id="start-btn">Start</button>
+            </div>
             <button id="reset-btn" style="display: none">Reset</button>
             <div class="current-player"></div>
             <!-- Dialog to show winner -->
