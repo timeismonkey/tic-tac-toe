@@ -53,6 +53,7 @@ const gameBoard = (() => {
         const resetBtn = document.createElement('button');
         resetBtn.innerHTML = 'Reset'
         resetBtn.setAttribute('id', 'reset-btn');
+        resetBtn.classList.add('btn')
         resetBtn.addEventListener('click', () => gameController.resetGame());
 
         mainContainer.appendChild(resetBtn);
