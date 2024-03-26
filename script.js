@@ -46,6 +46,17 @@ const gameBoard = (() => {
 
         mainContainer.appendChild(boardElement);
 
+       if (mainContainer.querySelector('#reset-btn')) {
+        mainContainer.removeChild(document.querySelector('#reset-btn'));
+       }
+
+        const resetBtn = document.createElement('button');
+        resetBtn.innerHTML = 'Reset'
+        resetBtn.setAttribute('id', 'reset-btn');
+        resetBtn.addEventListener('click', () => gameController.resetGame());
+
+        mainContainer.appendChild(resetBtn);
+
         // Add event listeners to cells
         boardElement
             .querySelectorAll('.cell')
@@ -65,7 +76,6 @@ const displayController = (() => {
     let gameEndDialog = document.querySelector('dialog');
     let closeModal = gameEndDialog.querySelector('button');
     let outcomeElement = gameEndDialog.querySelector('.outcome');
-    let resetBtn = mainContainer.querySelector('#reset-btn');
     let playerInput = mainContainer.querySelectorAll('input');
     let startBtn = mainContainer.querySelector('#start-btn');
     let symbolElements = mainContainer.querySelectorAll('.symbol');
@@ -75,14 +85,12 @@ const displayController = (() => {
     const hideInitialMain = () => {
         playerInput.forEach((input) => (input.style.display = 'none'));
         startBtn.style.display = 'none';
-        resetBtn.style.display = 'inline';
     };
 
     const showInitialMain = () => {
         playerInput.forEach((input) => input.style.display = 'inline');
         startBtn.style.display = 'inline';
         mainContainer.querySelector('.board').style.display = 'none';
-        resetBtn.style.display = 'none';
         mainContainer.querySelector('.current-player').style.display = 'none';
     }
 
@@ -114,8 +122,6 @@ const displayController = (() => {
     }
 
     closeModal.addEventListener('click', () => gameEndDialog.close());
-
-    resetBtn.addEventListener('click', () => gameController.resetGame());
 
     return { showInitialMain, hideInitialMain, showWinner, showTie, filledCell, showCurrentPlayer };
 })();
@@ -256,6 +262,8 @@ const gameController = (() => {
         currentPlayer = null;
         // Clear gameBoard
         gameBoard.clearBoard();
+        // Remove resetBtn
+        mainContainer.removeChild(mainContainer.querySelector('#reset-btn'));
         // Show start button and player name inputs
         displayController.showInitialMain();
     }

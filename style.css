@@ -52,6 +52,12 @@
     font-size: 17px;
 }
 
+/* Board page */
+.board-info {
+    display: flex;
+    
+}
+
 .board {
     display: flex;
     flex-direction: column;
