@@ -4,16 +4,17 @@ const gameBoard = (() => {
     let board = [
         ['', '', ''],
         ['', '', ''],
-        ['', '', '']
+        ['', '', ''],
     ];
 
     const getBoard = () => board;
 
-    const clearBoard = () => board = [
-        ['', '', ''],
-        ['', '', ''],
-        ['', '', '']
-    ];
+    const clearBoard = () =>
+        (board = [
+            ['', '', ''],
+            ['', '', ''],
+            ['', '', ''],
+        ]);
 
     const updateGameBoard = (row, col, symbol) => (board[row][col] = symbol);
 
@@ -46,14 +47,14 @@ const gameBoard = (() => {
 
         mainContainer.appendChild(boardElement);
 
-       if (mainContainer.querySelector('#reset-btn')) {
-        mainContainer.removeChild(document.querySelector('#reset-btn'));
-       }
+        if (mainContainer.querySelector('#reset-btn')) {
+            mainContainer.removeChild(document.querySelector('#reset-btn'));
+        }
 
         const resetBtn = document.createElement('button');
-        resetBtn.innerHTML = 'Reset'
+        resetBtn.innerHTML = 'Reset';
         resetBtn.setAttribute('id', 'reset-btn');
-        resetBtn.classList.add('btn')
+        resetBtn.classList.add('btn');
         resetBtn.addEventListener('click', () => gameController.resetGame());
 
         mainContainer.appendChild(resetBtn);
@@ -89,11 +90,11 @@ const displayController = (() => {
     };
 
     const showInitialMain = () => {
-        playerInput.forEach((input) => input.style.display = 'inline');
+        playerInput.forEach((input) => (input.style.display = 'inline'));
         startBtn.style.display = 'inline';
         mainContainer.querySelector('.board').style.display = 'none';
         mainContainer.querySelector('.current-player').style.display = 'none';
-    }
+    };
 
     const showWinner = () => {
         outcomeElement.innerHTML = `${gameController.getWinner().name} wins!`;
@@ -108,23 +109,35 @@ const displayController = (() => {
     const filledCell = (cell) => {
         let symbol = cell.querySelector('.symbol');
         symbol.classList.add('shake');
-        symbol.addEventListener("animationend", () => symbol.classList.remove("shake"));
+        symbol.addEventListener('animationend', () =>
+            symbol.classList.remove('shake')
+        );
 
         // Set cell background to red
         cell.classList.add('red-background');
         setTimeout(() => cell.classList.remove('red-background'), '500');
-    }
+    };
 
     const showCurrentPlayer = () => {
-        const currentPlayerElement = mainContainer.querySelector('.current-player');
+        const currentPlayerElement =
+            mainContainer.querySelector('.current-player');
         currentPlayerElement.style.display = 'block';
-        
-        currentPlayerElement.innerHTML = `${gameController.getCurrentPlayer().name}'s turn`;
-    }
+
+        currentPlayerElement.innerHTML = `${
+            gameController.getCurrentPlayer().name
+        }'s turn`;
+    };
 
     closeModal.addEventListener('click', () => gameEndDialog.close());
 
-    return { showInitialMain, hideInitialMain, showWinner, showTie, filledCell, showCurrentPlayer };
+    return {
+        showInitialMain,
+        hideInitialMain,
+        showWinner,
+        showTie,
+        filledCell,
+        showCurrentPlayer,
+    };
 })();
 
 const gameController = (() => {
@@ -134,10 +147,11 @@ const gameController = (() => {
     let players = [];
     let currentPlayer;
 
-    // const getStartingSymbol = () => startingSymbol = random();
     const getPlayers = () => {
-        let player1 = mainContainer.querySelector('#player-1-name').value || 'Player1';
-        let player2 = mainContainer.querySelector('#player-2-name').value || 'Player2';
+        let player1 =
+            mainContainer.querySelector('#player-1-name').value || 'Player1';
+        let player2 =
+            mainContainer.querySelector('#player-2-name').value || 'Player2';
         player1 = Player(player1, 'X');
         player2 = Player(player2, 'O');
         players.push(player1, player2);
@@ -219,7 +233,7 @@ const gameController = (() => {
         if (board[row][col] === '') {
             gameBoard.updateGameBoard(row, col, symbol);
             moveCount += 1;
-            gameBoard.render()
+            gameBoard.render();
 
             if (checkWinner()) {
                 displayController.showWinner();
@@ -249,8 +263,10 @@ const gameController = (() => {
         // Disable board
         let cells = mainContainer.querySelectorAll('.cell');
 
-        cells.forEach((cell) => cell.removeEventListener('click', handleCellClick));
-    }
+        cells.forEach((cell) =>
+            cell.removeEventListener('click', handleCellClick)
+        );
+    };
 
     const resetGame = () => {
         // Clear players
@@ -267,7 +283,7 @@ const gameController = (() => {
         mainContainer.removeChild(mainContainer.querySelector('#reset-btn'));
         // Show start button and player name inputs
         displayController.showInitialMain();
-    }
+    };
 
     return { start, getCurrentPlayer, handleCellClick, getWinner, resetGame };
 })();
