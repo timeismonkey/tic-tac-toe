@@ -1,4 +1,5 @@
-let mainContainer = document.querySelector('.main');
+const mainContainer = document.querySelector('.main');
+const boardContainer = document.querySelector('.board-container');
 
 const gameBoard = (() => {
     let board = [
@@ -21,8 +22,8 @@ const gameBoard = (() => {
     // Render board element
     const render = () => {
         // If boardElement already exists, clear it
-        if (mainContainer.querySelector('.board')) {
-            mainContainer.removeChild(mainContainer.querySelector('.board'));
+        if (boardContainer.querySelector('.board')) {
+            boardContainer.removeChild(mainContainer.querySelector('.board'));
         }
 
         let boardElement = document.createElement('div');
@@ -45,10 +46,12 @@ const gameBoard = (() => {
             boardElement.appendChild(rowElement);
         }
 
-        mainContainer.appendChild(boardElement);
+        boardContainer.appendChild(boardElement);
 
-        if (mainContainer.querySelector('#reset-btn')) {
-            mainContainer.removeChild(document.querySelector('#reset-btn'));
+        if (boardContainer.querySelector('#reset-btn')) {
+            boardContainer.removeChild(
+                boardContainer.querySelector('#reset-btn')
+            );
         }
 
         const resetBtn = document.createElement('button');
@@ -57,7 +60,7 @@ const gameBoard = (() => {
         resetBtn.classList.add('btn');
         resetBtn.addEventListener('click', () => gameController.resetGame());
 
-        mainContainer.appendChild(resetBtn);
+        boardContainer.appendChild(resetBtn);
 
         // Add event listeners to cells
         boardElement
@@ -92,8 +95,7 @@ const displayController = (() => {
     const showInitialMain = () => {
         playerInput.forEach((input) => (input.style.display = 'inline'));
         startBtn.style.display = 'inline';
-        mainContainer.querySelector('.board').style.display = 'none';
-        mainContainer.querySelector('.current-player').style.display = 'none';
+        boardContainer.style.display = 'none';
     };
 
     const showWinner = () => {
@@ -120,7 +122,7 @@ const displayController = (() => {
 
     const showCurrentPlayer = () => {
         const currentPlayerElement =
-            mainContainer.querySelector('.current-player');
+            boardContainer.querySelector('.current-player');
         currentPlayerElement.style.display = 'block';
 
         currentPlayerElement.innerHTML = `${
@@ -172,6 +174,7 @@ const gameController = (() => {
         displayController.showCurrentPlayer();
 
         // Render game
+        boardContainer.style.display = 'flex';
         displayController.hideInitialMain();
         gameBoard.render();
     };
@@ -280,7 +283,7 @@ const gameController = (() => {
         // Clear gameBoard
         gameBoard.clearBoard();
         // Remove resetBtn
-        mainContainer.removeChild(mainContainer.querySelector('#reset-btn'));
+        boardContainer.removeChild(mainContainer.querySelector('#reset-btn'));
         // Show start button and player name inputs
         displayController.showInitialMain();
     };
